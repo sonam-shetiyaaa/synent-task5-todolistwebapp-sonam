@@ -21,6 +21,7 @@ const STORAGE_KEY = 'todos';
 let todos = loadTodos();
 let currentFilter = 'all';
 let query = '';
+let wasAllDone = false;
 
 function loadTodos() {
     try {
@@ -105,7 +106,7 @@ function startEdit(todo, contentEl) {
 }
 
 function render() {
-    const visible = getVisibleTodos();
+    const visible = getVisibleTodos().sort((a, b) => Number(a.completed) - Number(b.completed));
 
     list.innerHTML = '';
 
@@ -193,7 +194,12 @@ function updateStats() {
     const pct = total ? Math.round((done / total) * 100) : 0;
     progressFill.style.width = `${pct}%`;
     progressFill.classList.toggle('done', total > 0 && done === total);
-    progressLabel.textContent = `${done} / ${total} done`;
+    progressLabel.textContent = total > 0 && done === total ? 'All done!' : `${done} / ${total} done`;
+
+    if (total > 0 && done === total && !wasAllDone) {
+        burstConfetti();
+    }
+    wasAllDone = total > 0 && done === total;
 
     if (total === 0) {
         emptyTitle.textContent = 'All clear!';
@@ -218,6 +224,24 @@ function addTask(text) {
     });
     saveTodos();
     render();
+}
+
+function burstConfetti() {
+    const wrap = document.createElement('div');
+    wrap.className = 'confetti-wrap';
+    document.body.appendChild(wrap);
+
+    const colors = ['#818cf8', '#c084fc', '#34d399', '#fbbf24', '#f87171'];
+    for (let i = 0; i < 40; i++) {
+        const piece = document.createElement('span');
+        piece.className = 'confetti-piece';
+        piece.style.left = `${Math.random() * 100}%`;
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.animationDelay = `${Math.random() * 0.3}s`;
+        piece.style.setProperty('--drift', `${(Math.random() - 0.5) * 180}px`);
+        wrap.appendChild(piece);
+    }
+    setTimeout(() => wrap.remove(), 2000);
 }
 
 function clearCompleted() {
