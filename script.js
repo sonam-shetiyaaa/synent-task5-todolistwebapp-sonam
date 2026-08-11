@@ -17,6 +17,7 @@ const countActive = document.getElementById('count-active');
 const countCompleted = document.getElementById('count-completed');
 
 const STORAGE_KEY = 'todos';
+const EMPTY_MESSAGES = ['All clear!', 'Nothing to do!', "You're all caught up!", 'Task-free zone!'];
 
 let todos = loadTodos();
 let currentFilter = 'all';
@@ -209,7 +210,7 @@ function updateStats() {
     wasAllDone = total > 0 && done === total;
 
     if (total === 0) {
-        emptyTitle.textContent = 'All clear!';
+        emptyTitle.textContent = EMPTY_MESSAGES[Math.floor(Math.random() * EMPTY_MESSAGES.length)];
         emptySub.textContent = 'Add a task above to get started.';
     } else {
         emptyTitle.textContent = 'No tasks found';
@@ -267,6 +268,12 @@ function setFilter(filter) {
 
 form.addEventListener('submit', (e) => {
     e.preventDefault();
+    if (!input.value.trim()) {
+        form.classList.add('shake');
+        setTimeout(() => form.classList.remove('shake'), 400);
+        input.focus();
+        return;
+    }
     addTask(input.value);
     input.value = '';
     input.focus();

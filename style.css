@@ -198,6 +198,15 @@ h1 {
 
 .add-form button:active { transform: scale(0.96); }
 
+.add-form.shake { animation: shake 0.35s ease; }
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    50% { transform: translateX(6px); }
+    75% { transform: translateX(-3px); }
+}
+
 .search-wrap {
     position: relative;
     display: flex;
@@ -318,6 +327,7 @@ h1 {
 #todo-list li.important {
     border-color: rgba(251, 191, 36, 0.5);
     background: rgba(251, 191, 36, 0.06);
+    border-left: 4px solid var(--warn);
 }
 
 @keyframes taskIn {
