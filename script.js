@@ -32,7 +32,8 @@ function loadTodos() {
             text: t.text,
             completed: !!t.completed,
             important: !!t.important,
-            createdAt: t.createdAt || Date.now()
+            createdAt: t.createdAt || Date.now(),
+            completedAt: t.completedAt || null
         }));
     } catch (e) {
         return [];
@@ -132,6 +133,7 @@ function render() {
         checkbox.setAttribute('aria-label', 'Mark as completed');
         checkbox.addEventListener('change', () => {
             todo.completed = checkbox.checked;
+            todo.completedAt = checkbox.checked ? Date.now() : null;
             saveTodos();
             render();
         });
@@ -147,7 +149,9 @@ function render() {
 
         const time = document.createElement('span');
         time.className = 'task-time';
-        time.textContent = `added ${timeAgo(todo.createdAt)}`;
+        time.textContent = todo.completed
+            ? `done ${timeAgo(todo.completedAt || todo.createdAt)}`
+            : `added ${timeAgo(todo.createdAt)}`;
 
         content.appendChild(span);
         content.appendChild(time);
@@ -163,9 +167,12 @@ function render() {
         deleteBtn.setAttribute('aria-label', 'Delete task');
         deleteBtn.innerHTML = '<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
         deleteBtn.addEventListener('click', () => {
-            todos = todos.filter(t => t.id !== todo.id);
-            saveTodos();
-            render();
+            li.classList.add('removing');
+            setTimeout(() => {
+                todos = todos.filter(t => t.id !== todo.id);
+                saveTodos();
+                render();
+            }, 180);
         });
 
         li.appendChild(starBtn);

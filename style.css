@@ -142,6 +142,12 @@ h1 {
 #progress-fill.done {
     background: linear-gradient(90deg, var(--success), #10b981);
     box-shadow: 0 0 12px rgba(52, 211, 153, 0.6);
+    animation: glowPulse 2s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+    0%, 100% { box-shadow: 0 0 8px rgba(52, 211, 153, 0.5); }
+    50% { box-shadow: 0 0 18px rgba(52, 211, 153, 0.85); }
 }
 
 .add-form {
@@ -317,6 +323,15 @@ h1 {
 @keyframes taskIn {
     from { opacity: 0; transform: translateY(10px) scale(0.98); }
     to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+#todo-list li.removing {
+    animation: taskOut 0.18s ease forwards;
+    pointer-events: none;
+}
+
+@keyframes taskOut {
+    to { opacity: 0; transform: translateX(24px) scale(0.96); }
 }
 
 .star-btn {
